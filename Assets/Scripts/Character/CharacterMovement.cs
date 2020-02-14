@@ -2,44 +2,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement : MonoBehaviour
 {    
+    [Header("Ссылки на необходимые обьекты")]
     [SerializeField] private GameObject _planet;
-    [SerializeField] private Transform _characterGraphics;
-    [SerializeField] private float _speed = 1f;
     [SerializeField] private InputController _inputController;
+    [SerializeField] private Transform _cameraHolder;
 
-    private Rigidbody _rig;
+    [Header("Скорость игрока")]
+    [SerializeField] private float _speed = 1f;
+
     private float _distanceToGround = 0f;
     private Vector3 _normalizedToGround;
     private RaycastHit hit;
     private bool _isOnGround;
 
     private void Reset() 
-    {
-        _rig = GetComponent<Rigidbody>();
-        _rig.freezeRotation = true;
-        _rig.useGravity = false;
+    {        
         _inputController = FindObjectOfType<InputController>();
-
+        _cameraHolder = Camera.main.transform;
     }
     private void Update() 
     {
-        //движение по оси X, двигаю графику
-        float x = _characterGraphics.localPosition.x;  
-        x = Mathf.Lerp(_characterGraphics.localPosition.x, _inputController.Strafe, Time.deltaTime * 5f);
-        x = Mathf.Clamp(x, -5.5f, 5.5f);
+        //движение по оси X, двигаю root
+        float x = transform.position.x;  
+        x = Mathf.Lerp(transform.position.x, _inputController.Strafe, Time.deltaTime * 1f);
+        x = Mathf.Clamp(x, -0.65f, 0.65f);
 
-        var pos = _characterGraphics.localPosition;
+        var pos = transform.position;
         pos.x = x;
-        _characterGraphics.localPosition = pos;
+        transform.position = pos;
 
-        //движение вперёд по собственной оси Z, двигается Root Gameobjet
+        //движение вперёд по собственной оси Z, двигается Root Gameobjet и Camera Holder
         float z = Time.deltaTime * _speed; 
         transform.Translate(0f, 0f, z);
+        _cameraHolder.Translate(0f, 0f, z);
 
-        //имитация гравитации и вращение root, что бы его vector.up был нормализован относительно поверхности коллайдера
+        //имитация гравитации для root, вращение root и camera holder, что бы его vector.up был нормализован относительно поверхности коллайдера
         if (Physics.Raycast(transform.position, -transform.up, out hit, 5f)) 
         { 
             _distanceToGround = hit.distance;
@@ -49,5 +48,10 @@ public class CharacterMovement : MonoBehaviour
 
         Quaternion toRotation = Quaternion.FromToRotation(transform.up, _normalizedToGround) * transform.rotation;        
         transform.rotation = toRotation;
+
+        var temprot = toRotation;
+        temprot.y = 0f;
+        temprot.z = 0f;
+        _cameraHolder.rotation = temprot;
     }
 }

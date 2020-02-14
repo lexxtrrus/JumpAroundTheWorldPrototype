@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class CharacterJump : MonoBehaviour 
 {
     [SerializeField] private AnimationCurve _jumpCurve;    
@@ -7,6 +8,25 @@ public class CharacterJump : MonoBehaviour
     [SerializeField] private float _jumpHeight = 5f;
     [SerializeField] private float _speedJump = 1f;
     private float _iteration = 0f;
+    private GameObject _temp;
+    private int _countOfJumps = 0;
+
+    private Rigidbody _rig;
+
+    private Transform _obstaclePosStepBehind;
+
+    private void Reset() 
+    {
+        _rig = GetComponent<Rigidbody>();
+        _rig.freezeRotation = true;
+        _rig.useGravity = false;
+    }
+
+    private void Awake() 
+    {
+        _temp = new GameObject();
+        _obstaclePosStepBehind = _temp.transform;
+    }
 
     private void Update() 
     {
@@ -18,6 +38,24 @@ public class CharacterJump : MonoBehaviour
 
         if(_iteration < 1f) return;
         _iteration = 0f;
+
+        //препятствия будут генерироваться в точке приземления через 4 прыжка 
+        _countOfJumps+=1;
+
+        if(_countOfJumps % 4 != 0)
+        {   
+            _obstaclePosStepBehind.position = transform.position;         
+            if (Physics.Raycast(transform.position, -transform.up, out var hit, 5f))
+            { 
+                var _normalizedToGround = hit.normal;
+                Quaternion toRotation = Quaternion.FromToRotation(transform.up, _normalizedToGround) * transform.rotation;        
+                _obstaclePosStepBehind.rotation = toRotation;
+            }
+        }
+        else
+        {
+            MountainsGenerator.OnGenerateMountine?.Invoke(_obstaclePosStepBehind);
+        }
     }
     
 }
