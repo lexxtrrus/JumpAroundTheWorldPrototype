@@ -11,7 +11,7 @@ public class ObstacleCollisionChecker : MonoBehaviour
     {
         if(other.gameObject.transform.parent.gameObject.CompareTag("Respawn"))
         {
-            Debug.Log("Yep");
+            OnDeathStatisticScreen.OnDieAction?.Invoke();
         }
 
         if(other.gameObject.CompareTag("Finish"))

@@ -41,7 +41,10 @@ public class MountainsGenerator : MonoBehaviour
         if(!_isChecking) return;
 
         _distanceToCurrentObsctacle = Vector3.Distance(_playerPos.position, _generatedMountains[0].transform.position);
-        _distanceToForwardObstacle = Vector3.Distance(_playerPos.position, _generatedMountains[1].transform.position);
+        if(_generatedMountains[1] != null)
+        {
+            _distanceToForwardObstacle = Vector3.Distance(_playerPos.position, _generatedMountains[1].transform.position);
+        } 
 
         if(_distanceToForwardObstacle < _distanceToCurrentObsctacle)
         {
@@ -50,7 +53,7 @@ public class MountainsGenerator : MonoBehaviour
             if(_generatedMountains[0]!= null) 
             {
                 _generatedMountains.RemoveAt(0);
-                _obstacleCounter.RemoveObstacle();
+                //_obstacleCounter.RemoveObstacle();
             }
         }
     }
@@ -68,6 +71,7 @@ public class MountainsGenerator : MonoBehaviour
         mountine.transform.position -= mountine.transform.up *  0.2f;
         mountine.transform.SetParent(transform);
         _obstacleCounter.AddObstacle();
+        OnDeathStatisticScreen.OnCountObstaclesChanged?.Invoke();
     }
 
     private void StartChecking()
