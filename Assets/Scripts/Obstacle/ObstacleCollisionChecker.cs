@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class ObstacleCollisionChecker : MonoBehaviour
 {
+    public static event Action OnStartReached;
+
     private void OnTriggerEnter(Collider other) 
     {
         if(other.gameObject.transform.parent.gameObject.CompareTag("Respawn"))
@@ -13,8 +16,7 @@ public class ObstacleCollisionChecker : MonoBehaviour
 
         if(other.gameObject.CompareTag("Finish"))
         {
-            MountainsGenerator.OnStartCheck?.Invoke();
-            Debug.Log("StartChecking");
+            OnStartReached?.Invoke();
         }
     }
 }

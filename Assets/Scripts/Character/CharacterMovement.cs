@@ -17,6 +17,16 @@ public class CharacterMovement : MonoBehaviour
     private RaycastHit hit;
     private bool _isOnGround;
 
+    private void Awake() 
+    {
+        ObstacleCollisionChecker.OnStartReached += SpeedChange;
+    }
+
+    private void OnDestroy() 
+    {
+        ObstacleCollisionChecker.OnStartReached -= SpeedChange;
+    }
+
     private void Reset() 
     {        
         _inputController = FindObjectOfType<InputController>();
@@ -46,12 +56,17 @@ public class CharacterMovement : MonoBehaviour
             Debug.DrawRay(transform.position, -transform.up, Color.red, 1f);
         }
 
-        Quaternion toRotation = Quaternion.FromToRotation(transform.up, _normalizedToGround) * transform.rotation;        
+        Quaternion toRotation = Quaternion.FromToRotation(transform.up, _normalizedToGround) * transform.rotation;     
         transform.rotation = toRotation;
 
         var temprot = toRotation;
         temprot.y = 0f;
         temprot.z = 0f;
         _cameraHolder.rotation = temprot;
+    }
+
+    private void SpeedChange()
+    {
+        _speed += _speed * 0.3f;
     }
 }

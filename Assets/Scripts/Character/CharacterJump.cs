@@ -4,15 +4,13 @@ using UnityEngine;
 public class CharacterJump : MonoBehaviour 
 {
     [SerializeField] private AnimationCurve _jumpCurve;    
-    [SerializeField] private float _startY = 0.5f;
-    [SerializeField] private float _jumpHeight = 5f;
+    [SerializeField] private float _startY = 0.05f;
+    [SerializeField] private float _jumpHeight = 10f;
     [SerializeField] private float _speedJump = 1f;
     private float _iteration = 0f;
-    private GameObject _temp;
+    private GameObject _temp; // пустой gameobject для передачи transform 
     private int _countOfJumps = 0;
-
     private Rigidbody _rig;
-
     private Transform _obstaclePosStepBehind;
 
     private void Reset() 
@@ -39,10 +37,10 @@ public class CharacterJump : MonoBehaviour
         if(_iteration < 1f) return;
         _iteration = 0f;
 
-        //препятствия будут генерироваться в точке приземления через 4 прыжка 
+        //препятствия будут генерироваться в точке приземления через 3 прыжка 
         _countOfJumps+=1;
 
-        if(_countOfJumps % 4 != 0)
+        if(_countOfJumps % 3 != 0)
         {   
             _obstaclePosStepBehind.position = transform.position;         
             if (Physics.Raycast(transform.position, -transform.up, out var hit, 5f))

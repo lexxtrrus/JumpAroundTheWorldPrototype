@@ -8,6 +8,8 @@ public class MountainsGenerator : MonoBehaviour
     [SerializeField] private Transform _playerPos; // необходимо для определения ближайшего obstacle в _generatedMountains к player 
     [SerializeField] private List<GameObject> _prefabs = new List<GameObject>();
     [SerializeField] private List<GameObject> _generatedMountains =new List<GameObject>();
+    [SerializeField] private GameObject _obstaclesPlaced;
+    [SerializeField] private ObstacleCounter _obstacleCounter;
     private Coroutine _delayPlacement;
     private bool _isChecking = false;
     private float _distanceToCurrentObsctacle;
@@ -19,12 +21,15 @@ public class MountainsGenerator : MonoBehaviour
     private void Awake() 
     {
         OnGenerateMountine += GenerateMountine;
-        OnStartCheck += StartChecking;
+        ObstacleCollisionChecker.OnStartReached += StartChecking;
+        ObstacleCollisionChecker.OnStartReached += HidePlacedObstacle;
     }
 
     private void OnDestroy() 
     {
         OnGenerateMountine -= GenerateMountine;
+        ObstacleCollisionChecker.OnStartReached -= StartChecking;
+        ObstacleCollisionChecker.OnStartReached -= HidePlacedObstacle;
     }
     private void GenerateMountine(Transform pos)
     {  
@@ -40,8 +45,13 @@ public class MountainsGenerator : MonoBehaviour
 
         if(_distanceToForwardObstacle < _distanceToCurrentObsctacle)
         {
-            StartCoroutine(DestroyObstacle(_generatedMountains[0]));
-            _generatedMountains.RemoveAt(0);
+            StartCoroutine(DestroyObstacle(_generatedMountains[0]));            
+            
+            if(_generatedMountains[0]!= null) 
+            {
+                _generatedMountains.RemoveAt(0);
+                _obstacleCounter.RemoveObstacle();
+            }
         }
     }
 
@@ -51,12 +61,13 @@ public class MountainsGenerator : MonoBehaviour
         Vector3 tempPosition = pos.transform.position;
         Quaternion tempRotation = pos.rotation;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
 
         var mountine = Instantiate(_prefabs[rand], tempPosition, tempRotation);
         _generatedMountains.Add(mountine);
-        mountine.transform.position += mountine.transform.up * - 0.1f;
+        mountine.transform.position -= mountine.transform.up *  0.2f;
         mountine.transform.SetParent(transform);
+        _obstacleCounter.AddObstacle();
     }
 
     private void StartChecking()
@@ -66,7 +77,12 @@ public class MountainsGenerator : MonoBehaviour
 
     private IEnumerator DestroyObstacle(GameObject go)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         Destroy(go);
+    }
+
+    private void HidePlacedObstacle()
+    {
+        _obstaclesPlaced.SetActive(false);
     }
 }

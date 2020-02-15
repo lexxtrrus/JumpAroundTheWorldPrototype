@@ -5,6 +5,7 @@ using UnityEngine;
 public class InputController : MonoBehaviour
 {
     private float _screenCenter;
+    private float _inputBoard;
     private float _strafe = 0f;
     public float Strafe
     {
@@ -15,13 +16,14 @@ public class InputController : MonoBehaviour
     private void Awake() 
     {
         _screenCenter = Screen.width * 0.5f;
+        _inputBoard = Screen.height * 0.7f;
     }
 
     private void Update() 
     {
         float x = 0f;        
 
-        if(Input.GetMouseButton(0)) 
+        if(Input.GetMouseButton(0) && Input.mousePosition.y < _inputBoard) 
         {
             x = Input.mousePosition.x;
 
