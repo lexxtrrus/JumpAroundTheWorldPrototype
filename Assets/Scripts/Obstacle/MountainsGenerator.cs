@@ -48,13 +48,8 @@ public class MountainsGenerator : MonoBehaviour
 
         if(_distanceToForwardObstacle < _distanceToCurrentObsctacle)
         {
-            StartCoroutine(DestroyObstacle(_generatedMountains[0]));            
-            
-            if(_generatedMountains[0]!= null) 
-            {
-                _generatedMountains.RemoveAt(0);
-                //_obstacleCounter.RemoveObstacle();
-            }
+            StartCoroutine(DestroyObstacle(_generatedMountains[0])); 
+            _generatedMountains.RemoveAt(0);
         }
     }
 
