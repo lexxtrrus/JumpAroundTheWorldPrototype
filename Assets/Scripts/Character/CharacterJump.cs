@@ -42,13 +42,8 @@ public class CharacterJump : MonoBehaviour
 
         if(_countOfJumps % 3 != 0)
         {   
-            _obstaclePosStepBehind.position = transform.position;         
-            if (Physics.Raycast(transform.position, -transform.up, out var hit, 5f))
-            { 
-                var _normalizedToGround = hit.normal;
-                Quaternion toRotation = Quaternion.FromToRotation(transform.up, _normalizedToGround) * transform.rotation;        
-                _obstaclePosStepBehind.rotation = toRotation;
-            }
+            _obstaclePosStepBehind.position = transform.parent.position; 
+            _obstaclePosStepBehind.rotation = transform.parent.rotation;
         }
         else
         {
