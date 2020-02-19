@@ -39,13 +39,11 @@ public class MountainsGenerator : MonoBehaviour
     private void Update() 
     {
         if(!_isChecking) return;
+        if(_generatedMountains.Count <= 1) return;
 
         _distanceToCurrentObsctacle = Vector3.Distance(_playerPos.position, _generatedMountains[0].transform.position);
-        if(_generatedMountains[1] != null)
-        {
-            _distanceToForwardObstacle = Vector3.Distance(_playerPos.position, _generatedMountains[1].transform.position);
-        } 
-
+        _distanceToForwardObstacle = Vector3.Distance(_playerPos.position, _generatedMountains[1].transform.position);
+        
         if(_distanceToForwardObstacle < _distanceToCurrentObsctacle)
         {
             StartCoroutine(DestroyObstacle(_generatedMountains[0])); 

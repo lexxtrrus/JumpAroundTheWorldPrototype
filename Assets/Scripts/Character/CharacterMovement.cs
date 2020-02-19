@@ -32,7 +32,7 @@ public class CharacterMovement : MonoBehaviour
         _inputController = FindObjectOfType<InputController>();
         _cameraHolder = Camera.main.transform;
     }
-    private void Update() 
+    private void FixedUpdate() 
     {
         //движение по оси X, двигаю root
         float x = transform.position.x;  
@@ -48,13 +48,20 @@ public class CharacterMovement : MonoBehaviour
         transform.Translate(0f, 0f, z);
         _cameraHolder.Translate(0f, 0f, z);
 
-        //имитация гравитации для root, вращение root и camera holder, что бы его vector.up был нормализован относительно поверхности коллайдера
-        if (Physics.Raycast(transform.position, -transform.up, out hit, 5f)) 
-        { 
-            _distanceToGround = hit.distance;
+        //имитация гравитации для root, вращение root и camera holder, что бы его vector.up был нормализован относительно поверхности коллайдера 
+        if (Physics.Raycast(transform.position, -transform.up, out hit, 2f)) 
+        {   
+            _distanceToGround = hit.distance;       
             _normalizedToGround = hit.normal;
-            Debug.DrawRay(transform.position, -transform.up, Color.red, 1f);
+            Debug.DrawRay(transform.position, -transform.up, Color.red, 2f);
         }
+
+        if(_distanceToGround > 0.1f)
+        {
+            //очень топорно, надо придумать что то помягче
+            transform.Translate(- Vector3.up * _distanceToGround, Space.Self);
+            _cameraHolder.Translate(- Vector3.up * _distanceToGround, Space.Self);
+        }       
 
         Quaternion toRotation = Quaternion.FromToRotation(transform.up, _normalizedToGround) * transform.rotation;     
         transform.rotation = toRotation;
