@@ -56,13 +56,6 @@ public class CharacterMovement : MonoBehaviour
             Debug.DrawRay(transform.position, -transform.up, Color.red, 2f);
         }
 
-        if(_distanceToGround > 0.1f)
-        {
-            //очень топорно, надо придумать что то помягче
-            transform.Translate(- Vector3.up * _distanceToGround, Space.Self);
-            _cameraHolder.Translate(- Vector3.up * _distanceToGround, Space.Self);
-        }       
-
         Quaternion toRotation = Quaternion.FromToRotation(transform.up, _normalizedToGround) * transform.rotation;     
         transform.rotation = toRotation;
 
@@ -70,6 +63,13 @@ public class CharacterMovement : MonoBehaviour
         temprot.y = 0f;
         temprot.z = 0f;
         _cameraHolder.rotation = temprot;
+
+        if(_distanceToGround > 0.7f)
+        {
+            //очень топорно, надо придумать что то помягче
+            transform.Translate(- Vector3.up * _distanceToGround * 0.5f, Space.Self);
+            _cameraHolder.Translate(- Vector3.up * _distanceToGround * 0.5f, Space.Self);
+        }  
     }
 
     private void SpeedChange()

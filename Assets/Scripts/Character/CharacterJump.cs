@@ -40,7 +40,7 @@ public class CharacterJump : MonoBehaviour
         //препятствия будут генерироваться в точке приземления через 3 прыжка 
         _countOfJumps+=1;
 
-        if(_countOfJumps % 3 != 0)
+        if(_countOfJumps % 2 != 0)
         {   
             _obstaclePosStepBehind.position = transform.parent.position; 
             _obstaclePosStepBehind.rotation = transform.parent.rotation;
